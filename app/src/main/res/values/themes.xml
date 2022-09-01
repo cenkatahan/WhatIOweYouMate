@@ -13,4 +13,10 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@color/secondaryColor</item>
+
+        <item name="buttonBarPositiveButtonStyle">@color/primaryDarkColor</item>
+    </style>
 </resources>

@@ -10,13 +10,13 @@
         android:id="@+id/btnCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Group "
-        app:icon="@drawable/ic_person"
         android:layout_margin="16dp"
+        android:text="ADD PERSON"
         app:cornerRadius="16dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:icon="@drawable/ic_person"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
