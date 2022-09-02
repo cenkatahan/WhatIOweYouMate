@@ -14,9 +14,19 @@
         android:text="ADD PERSON"
         app:cornerRadius="16dp"
         app:icon="@drawable/ic_person"
+        app:layout_constraintBottom_toTopOf="@id/rvPeople"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPeople"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:listitem="@layout/layout_item_person"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnCreate"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

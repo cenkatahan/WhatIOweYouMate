@@ -14,7 +14,8 @@ import com.atahan.whatioweyoumate.model.Person
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-//    private var groupSize = 0
+
+    //    private var groupSize = 0
     private lateinit var friendGroup: ArrayList<Person>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,28 +37,29 @@ class MainActivity : AppCompatActivity() {
         var payment = 0
 
         bindingDialog.btnConfirm.setOnClickListener {
-//            if (bindingDialog.etName.text.toString() == "") {
-//                return@setOnClickListener
-//            }
-//
-//            if (bindingDialog.etPayment.text.toString() == "") {
-//                payment = 0
-//                friendGroup.add(
-//                    Person(
-//                        bindingDialog.etName.text.toString(),
-//                        payment
-//                    )
-//                )
-//                dialog.dismiss()
-//            }
+            if (bindingDialog.etName.text.toString() == "") {
+                return@setOnClickListener
+            }
 
-                bindingDialog.etName.text?.let {
+            if (bindingDialog.etPayment.text.toString() == "") {
+                payment = 0
+                friendGroup.add(
+                    Person(
+                        bindingDialog.etName.text.toString(),
+                        payment
+                    )
+                )
+                dialog.dismiss()
+            } else {
+                bindingDialog.etPayment.text?.let {
+                    payment = it.toString().toInt()
+                }
+            }
+
+            bindingDialog.etName.text?.let {
                 name = it.toString()
             }
 
-            bindingDialog.etPayment.text?.let {
-                payment = it.toString().toInt()
-            }
 
             friendGroup.add(Person(name, payment))
             dialog.dismiss()
