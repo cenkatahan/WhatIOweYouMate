@@ -1,6 +1,6 @@
 package com.atahan.whatioweyoumate.model
 
-data class Person(
+data class Friend(
     val name: String,
     val payment: Int
 )

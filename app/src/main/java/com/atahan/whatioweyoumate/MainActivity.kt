@@ -1,67 +1,71 @@
 package com.atahan.whatioweyoumate
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.LinearLayout
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogCreateGroupBinding
-import com.atahan.whatioweyoumate.model.Person
+import com.atahan.whatioweyoumate.model.Friend
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
-    //    private var groupSize = 0
-    private lateinit var friendGroup: ArrayList<Person>
+    private lateinit var bindingDialog: LayoutDialogCreateGroupBinding
+    private lateinit var friends: ArrayList<Friend>
+    private var friendAdapter: FriendAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        friendGroup = ArrayList()
+        friends = ArrayList()
+        setListeners()
+        setAdapter()
+    }
+
+    private fun setListeners() {
         binding.btnCreate.setOnClickListener {
             openDialog()
         }
     }
 
+    private fun setAdapter() {
+        friendAdapter = FriendAdapter(friends)
+        with(binding.recyclerview) {
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            adapter = friendAdapter
+        }
+    }
+
     private fun openDialog() {
+        bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
-        val bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
 
         var name = ""
         var payment = 0
 
         bindingDialog.btnConfirm.setOnClickListener {
-            if (bindingDialog.etName.text.toString() == "") {
+            if (checkDialogEmptyFields()) {
                 return@setOnClickListener
             }
 
-            if (bindingDialog.etPayment.text.toString() == "") {
-                payment = 0
-                friendGroup.add(
-                    Person(
-                        bindingDialog.etName.text.toString(),
-                        payment
-                    )
-                )
-                dialog.dismiss()
-            } else {
-                bindingDialog.etPayment.text?.let {
-                    payment = it.toString().toInt()
-                }
+            bindingDialog.etPayment.text?.let {
+                payment = it.toString().toInt()
             }
 
             bindingDialog.etName.text?.let {
                 name = it.toString()
             }
 
+            friends.add(Friend(name, payment))
 
-            friendGroup.add(Person(name, payment))
+            if (friends.size >= 2) {
+                binding.btnCalculate.isEnabled = true
+            }
+
             dialog.dismiss()
         }
 
@@ -73,5 +77,9 @@ class MainActivity : AppCompatActivity() {
             setContentView(bindingDialog.root)
             show()
         }
+    }
+
+    private fun checkDialogEmptyFields(): Boolean {
+        return bindingDialog.etName.text.toString() == "" || bindingDialog.etPayment.text.toString() == ""
     }
 }
