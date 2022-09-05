@@ -50,23 +50,15 @@ class MainActivity : AppCompatActivity() {
         bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
 
-        var name = ""
-        var payment = 0
-
         bindingDialog.btnConfirm.setOnClickListener {
             if (checkDialogEmptyFields()) {
                 return@setOnClickListener
             }
 
-            bindingDialog.etPayment.text?.let {
-                payment = it.toString().toInt()
-            }
+            val payment = bindingDialog.etPayment.text?.toString()?.toInt()
+            val name = bindingDialog.etName.text?.toString()
 
-            bindingDialog.etName.text?.let {
-                name = it.toString()
-            }
-
-            friends.add(Friend(name, payment))
+            friends.add(Friend(name!!, payment!!))
 
             if (friends.size >= 2) {
                 binding.btnCalculate.isEnabled = true

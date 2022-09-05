@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/bg_dialog.xml" value="0.192" />
+        <entry key="app/src/main/res/drawable/bg_item.xml" value="0.2875" />
         <entry key="app/src/main/res/drawable/ic_person.xml" value="0.1425" />
         <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.3125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_dialog_create_group.xml" value="0.33" />
         <entry key="app/src/main/res/layout/layout_dialog_remove.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/layout_item_friend.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/layout_item_person.xml" value="0.375" />
         <entry key="app/src/main/res/layout/testlayout.xml" value="0.22327898550724637" />
       </map>
