@@ -101,9 +101,7 @@ class MainActivity : AppCompatActivity() {
         val removeDialog = Dialog(this)
 
         bindingRemoveDialog.btnRemove.setOnClickListener {
-            if (friends.size > 0) {
-                friends.clear()
-            }
+            clearFriends()
             removeDialog.dismiss()
         }
 
@@ -116,5 +114,15 @@ class MainActivity : AppCompatActivity() {
             show()
         }
 
+    }
+
+    private fun clearFriends() {
+        if (friends.size > 0) {
+            friends.clear()
+        }
+        with(binding){
+            recyclerview.adapter = FriendAdapter(friends)
+            tvTotalPayment.text = "Total Payment: 0"
+        }
     }
 }
