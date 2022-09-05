@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guidelineItem"
+        android:textColor="@color/black"
         tools:text="NAME"
         android:drawablePadding="4dp"
         app:drawableStartCompat="@drawable/ic_person" />
@@ -28,6 +29,7 @@
         android:inputType="number"
         tools:text="32"
         android:drawablePadding="4dp"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guidelineItem"

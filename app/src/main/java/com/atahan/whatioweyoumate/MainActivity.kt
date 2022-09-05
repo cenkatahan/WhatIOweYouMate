@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
     private lateinit var friends: ArrayList<Friend>
     private var friendAdapter: FriendAdapter? = null
+    private var totalPayment: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,37 +45,51 @@ class MainActivity : AppCompatActivity() {
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
             adapter = friendAdapter
         }
+
+        friends.forEach {
+            totalPayment += it.payment
+        }
+
+        binding.tvTotalPayment.text = "Total Payment: $totalPayment"
     }
 
     private fun openAddDialog() {
         bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
 
-        bindingDialog.btnConfirm.setOnClickListener {
-            if (checkDialogEmptyFields()) {
-                return@setOnClickListener
+        with(bindingDialog) {
+            btnConfirm.setOnClickListener {
+                if (checkDialogEmptyFields()) {
+                    return@setOnClickListener
+                }
+
+                val payment = etPayment.text?.toString()?.toInt()
+                val name = etName.text?.toString()
+
+                increasePayment(payment!!)
+                friends.add(Friend(name!!, payment))
+
+                if (friends.size >= 2) {
+                    binding.btnCalculate.isEnabled = true
+                }
+
+                dialog.dismiss()
             }
 
-            val payment = bindingDialog.etPayment.text?.toString()?.toInt()
-            val name = bindingDialog.etName.text?.toString()
-
-            friends.add(Friend(name!!, payment!!))
-
-            if (friends.size >= 2) {
-                binding.btnCalculate.isEnabled = true
+            btnDismiss.setOnClickListener {
+                dialog.dismiss()
             }
-
-            dialog.dismiss()
-        }
-
-        bindingDialog.btnDismiss.setOnClickListener {
-            dialog.dismiss()
         }
 
         dialog.apply {
             setContentView(bindingDialog.root)
             show()
         }
+    }
+
+    private fun increasePayment(payment: Int) {
+        totalPayment += payment
+        binding.tvTotalPayment.text = "Total Payment: $totalPayment"
     }
 
     private fun checkDialogEmptyFields(): Boolean {
