@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogCreateGroupBinding
+import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.model.Friend
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingDialog: LayoutDialogCreateGroupBinding
+    private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
     private lateinit var friends: ArrayList<Friend>
     private var friendAdapter: FriendAdapter? = null
 
@@ -27,7 +29,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setListeners() {
         binding.btnCreate.setOnClickListener {
-            openDialog()
+            openAddDialog()
+        }
+
+        binding.fabRemove.setOnClickListener {
+            openRemoveDialog()
         }
     }
 
@@ -40,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openDialog() {
+    private fun openAddDialog() {
         bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
 
@@ -81,5 +87,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkDialogEmptyFields(): Boolean {
         return bindingDialog.etName.text.toString() == "" || bindingDialog.etPayment.text.toString() == ""
+    }
+
+    private fun openRemoveDialog() {
+        bindingRemoveDialog = LayoutDialogRemoveBinding.inflate(layoutInflater)
+        val removeDialog = Dialog(this)
+
+        bindingRemoveDialog.btnRemove.setOnClickListener {
+            if (friends.size > 0) {
+                friends.clear()
+            }
+            removeDialog.dismiss()
+        }
+
+        bindingRemoveDialog.btnCancel.setOnClickListener {
+            removeDialog.dismiss()
+        }
+
+        removeDialog.apply {
+            setContentView(bindingRemoveDialog.root)
+            show()
+        }
+
     }
 }
