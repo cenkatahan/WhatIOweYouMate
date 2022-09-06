@@ -2,6 +2,9 @@ package com.atahan.whatioweyoumate
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
@@ -35,6 +38,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.fabRemove.setOnClickListener {
             openRemoveDialog()
+        }
+
+        binding.btnCalculate.setOnClickListener {
+            calculateDebts()
         }
     }
 
@@ -119,10 +126,27 @@ class MainActivity : AppCompatActivity() {
     private fun clearFriends() {
         if (friends.size > 0) {
             friends.clear()
+            totalPayment = 0
         }
         with(binding){
             recyclerview.adapter = FriendAdapter(friends)
             tvTotalPayment.text = "Total Payment: 0"
         }
+    }
+
+    private fun calculateDebts() {
+        with(binding){
+            recyclerview.visibility = View.GONE
+            tvBill.visibility = View.VISIBLE
+        }
+
+        var bill = "================BILL================\n"
+        friends.forEach { friend ->
+            val debtPerEach = friend.payment / friends.size
+            bill += "Everyone should pay $debtPerEach to ${friend.name}"
+            bill += "=================================================="
+        }
+
+        binding.tvBill.text = bill
     }
 }

@@ -11,10 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:enabled="false"
         android:text="CALCULATE"
         app:cornerRadius="16dp"
         app:icon="@drawable/ic_calculate"
-        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="@id/btnCreate"
         app:layout_constraintEnd_toStartOf="@id/btnCreate"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,8 +24,8 @@
         android:id="@+id/btnCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:text="ADD PERSON"
         app:cornerRadius="16dp"
@@ -39,37 +39,50 @@
         android:id="@+id/tvTotalPayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="32dp"
-        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintBottom_toTopOf="@id/recyclerview"
         app:layout_constraintEnd_toEndOf="@id/btnCreate"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnCreate"
-        app:layout_constraintBottom_toTopOf="@id/recyclerview"
         tools:text="Total Payment: " />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        tools:listitem="@layout/layout_item_friend"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTotalPayment"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalPayment"
+        tools:listitem="@layout/layout_item_friend" />
+
+
+    <TextView
+        android:id="@+id/tvBill"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        tools:text="LOREM IPSUM"/>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabRemove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_remove"
         android:layout_margin="16dp"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintVertical_bias="1"
+        android:src="@drawable/ic_remove"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
