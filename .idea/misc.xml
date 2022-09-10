@@ -10,7 +10,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/layout_dialog_create_group.xml" value="0.33" />
         <entry key="app/src/main/res/layout/layout_dialog_remove.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/layout_item_friend.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/layout_item_friend.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_item_person.xml" value="0.375" />
         <entry key="app/src/main/res/layout/testlayout.xml" value="0.22327898550724637" />
       </map>

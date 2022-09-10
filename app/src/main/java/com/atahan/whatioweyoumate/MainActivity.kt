@@ -131,6 +131,8 @@ class MainActivity : AppCompatActivity() {
         with(binding){
             recyclerview.adapter = FriendAdapter(friends)
             tvTotalPayment.text = "Total Payment: 0"
+            recyclerview.visibility = View.VISIBLE
+            tvBill.visibility = View.GONE
         }
     }
 
@@ -143,8 +145,7 @@ class MainActivity : AppCompatActivity() {
         var bill = "================BILL================\n"
         friends.forEach { friend ->
             val debtPerEach = friend.payment / friends.size
-            bill += "Everyone should pay $debtPerEach to ${friend.name}"
-            bill += "=================================================="
+            bill += "->Everyone should pay $debtPerEach to ${friend.name}\n"
         }
 
         binding.tvBill.text = bill
