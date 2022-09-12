@@ -11,6 +11,8 @@ import java.util.ArrayList
 class FriendAdapter(private val friends: ArrayList<Friend>) :
     RecyclerView.Adapter<FriendAdapter.FriendHolder>() {
 
+    var editOnLongClick: (()->Unit)? = null
+
     class FriendHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.tvItemName)
         val payment: TextView = itemView.findViewById(R.id.tvItemPayment)
@@ -26,6 +28,13 @@ class FriendAdapter(private val friends: ArrayList<Friend>) :
         with(holder) {
             name.text = friends[position].name
             payment.text = friends[position].payment.toString()
+            itemView.setOnLongClickListener {
+                editOnLongClick?.invoke()
+                true
+            }
+//            itemView.setOnClickListener {
+//                editOnLongClick?.invoke()
+//            }
         }
     }
 

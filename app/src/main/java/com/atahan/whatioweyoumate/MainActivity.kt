@@ -3,6 +3,7 @@ package com.atahan.whatioweyoumate
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
@@ -44,7 +45,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setAdapter() {
-        friendAdapter = FriendAdapter(friends)
+        friendAdapter = FriendAdapter(friends).apply {
+            editOnLongClick = {
+                Toast.makeText(this@MainActivity, "CLICKED", Toast.LENGTH_SHORT).show()
+                //TODO open edit dialog.
+            }
+        }
         with(binding.recyclerview) {
             layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
