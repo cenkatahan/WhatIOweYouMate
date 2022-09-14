@@ -108,10 +108,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openRemoveDialog() {
+        if (friends.size <= 0) {
+            Toast.makeText(this, "List is empty.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         bindingRemoveDialog = LayoutDialogRemoveBinding.inflate(layoutInflater)
         val removeDialog = Dialog(this)
 
         bindingRemoveDialog.btnRemove.setOnClickListener {
+            binding.btnCalculate.isEnabled = false
             clearFriends()
             removeDialog.dismiss()
         }
@@ -153,5 +159,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.tvBill.text = bill
+    }
+
+    companion object {
+
     }
 }
