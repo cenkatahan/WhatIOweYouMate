@@ -2,17 +2,20 @@ package com.atahan.whatioweyoumate
 
 import android.app.Dialog
 import android.os.Bundle
+import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogCreateGroupBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.model.Friend
+import com.atahan.whatioweyoumate.model.ILongClick
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ILongClick {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingDialog: LayoutDialogCreateGroupBinding
     private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
@@ -30,6 +33,51 @@ class MainActivity : AppCompatActivity() {
         setAdapter()
     }
 
+    override fun edit(position: Int) {
+        openEditDialog(position)
+    }
+
+    //TODO dialogs should be a class
+    private fun openEditDialog(position: Int) {
+        bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
+        val dialog = Dialog(this)
+
+        bindingDialog.etName.text = Editable.Factory.getInstance().newEditable(friends[position].name)
+        bindingDialog.etPayment.text = Editable.Factory.getInstance().newEditable(friends[position].payment.toString())
+        val paymentBeforeChange = friends[position].payment
+
+
+        with(bindingDialog) {
+            btnConfirm.setOnClickListener {
+                if (checkDialogEmptyFields()) {
+                    return@setOnClickListener
+                }
+                totalPayment -= paymentBeforeChange
+                val payment = etPayment.text?.toString()?.toInt()
+                val name = etName.text?.toString()
+
+                increasePayment(payment!!)
+                friends[position] = Friend(name!!, payment)
+
+                if (friends.size >= SIZE_TWO) {
+                    binding.btnCalculate.isEnabled = true
+                }
+
+                friendAdapter?.notifyDataSetChanged()
+                dialog.dismiss()
+            }
+
+            btnDismiss.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+
+        dialog.apply {
+            setContentView(bindingDialog.root)
+            show()
+        }
+    }
+
     private fun setListeners() {
         binding.btnCreate.setOnClickListener {
             openAddDialog()
@@ -45,12 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setAdapter() {
-        friendAdapter = FriendAdapter(friends).apply {
-            editOnLongClick = {
-                Toast.makeText(this@MainActivity, "CLICKED", Toast.LENGTH_SHORT).show()
-                //TODO open edit dialog.
-            }
-        }
+        friendAdapter = FriendAdapter(friends, this)
         with(binding.recyclerview) {
             layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
@@ -108,7 +151,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openRemoveDialog() {
-        if (friends.size <= 0) {
+        if (friends.size <= SIZE_ZERO) {
             Toast.makeText(this, "List is empty.", Toast.LENGTH_SHORT).show()
             return
         }
@@ -134,12 +177,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearFriends() {
-        if (friends.size > 0) {
+        if (friends.size > SIZE_ZERO) {
             friends.clear()
-            totalPayment = 0
+            totalPayment = SIZE_ZERO
         }
         with(binding){
-            recyclerview.adapter = FriendAdapter(friends)
+            recyclerview.adapter = FriendAdapter(friends, this@MainActivity)
             tvTotalPayment.text = "Total Payment: 0"
             recyclerview.visibility = View.VISIBLE
             tvBill.visibility = View.GONE
@@ -157,11 +200,11 @@ class MainActivity : AppCompatActivity() {
             val debtPerEach = friend.payment / friends.size
             bill += "->Everyone should pay $debtPerEach to ${friend.name}\n"
         }
-
         binding.tvBill.text = bill
     }
 
     companion object {
-
+        private const val SIZE_ZERO = 0
+        private const val SIZE_TWO = 2
     }
 }
