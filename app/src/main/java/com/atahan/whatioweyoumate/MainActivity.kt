@@ -12,7 +12,7 @@ import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogCreateGroupBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.model.Friend
-import com.atahan.whatioweyoumate.model.ILongClick
+import com.atahan.whatioweyoumate.interfaces.ILongClick
 
 
 class MainActivity : AppCompatActivity(), ILongClick {

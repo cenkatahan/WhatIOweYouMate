@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.atahan.whatioweyoumate.R
 import com.atahan.whatioweyoumate.model.Friend
-import com.atahan.whatioweyoumate.model.ILongClick
+import com.atahan.whatioweyoumate.interfaces.ILongClick
 import java.util.ArrayList
 
 class FriendAdapter(private val friends: ArrayList<Friend>, private val onILongClick: ILongClick) :
