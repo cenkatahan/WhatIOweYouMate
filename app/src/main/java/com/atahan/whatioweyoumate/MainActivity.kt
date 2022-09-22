@@ -6,13 +6,17 @@ import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogCreateGroupBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.model.Friend
 import com.atahan.whatioweyoumate.interfaces.ILongClick
+import com.atahan.whatioweyoumate.utils.SwipeToDelete
+import com.google.android.material.snackbar.Snackbar
 
 
 class MainActivity : AppCompatActivity(), ILongClick {
@@ -22,6 +26,7 @@ class MainActivity : AppCompatActivity(), ILongClick {
     private lateinit var friends: ArrayList<Friend>
     private var friendAdapter: FriendAdapter? = null
     private var totalPayment: Int = 0
+    private var swipeToDelete: SwipeToDelete? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +110,36 @@ class MainActivity : AppCompatActivity(), ILongClick {
         }
 
         binding.tvTotalPayment.text = "Total Payment: $totalPayment"
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val deletedFriend: Friend =
+                    friends[position]
+                friends.removeAt(position)
+                friendAdapter?.notifyItemRemoved(viewHolder.adapterPosition)
+                Snackbar.make(binding.recyclerview, "Deleted " + deletedFriend.name, Snackbar.LENGTH_LONG)
+                    .setAction(
+                        "Undo"
+                    ) {
+                        friends.add(position, deletedFriend)
+                        friendAdapter?.notifyItemInserted(position)
+                        totalPayment += deletedFriend.payment
+                        binding.tvTotalPayment.text = "Total Payment: $totalPayment"
+                    }.show()
+
+                totalPayment -= deletedFriend.payment
+                binding.tvTotalPayment.text = "Total Payment: $totalPayment"
+            }
+        }).attachToRecyclerView(binding.recyclerview)
     }
 
     private fun openAddDialog() {
