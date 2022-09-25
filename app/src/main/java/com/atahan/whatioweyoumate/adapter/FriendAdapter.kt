@@ -28,6 +28,11 @@ class FriendAdapter(private val friends: ArrayList<Friend>, private val onILongC
         with(holder) {
             name.text = friends[position].name
             payment.text = friends[position].payment.toString()
+            payment.setOnLongClickListener {
+                onILongClick.updateDebt(position)
+                true
+            }
+
             itemView.setOnLongClickListener {
                 onILongClick.edit(position)
                 true

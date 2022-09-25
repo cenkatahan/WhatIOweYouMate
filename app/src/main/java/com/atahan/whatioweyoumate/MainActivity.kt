@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
+import com.atahan.whatioweyoumate.databinding.LayoutDialogAddDebtBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogCreateGroupBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.model.Friend
@@ -40,6 +41,10 @@ class MainActivity : AppCompatActivity(), ILongClick {
 
     override fun edit(position: Int) {
         openEditDialog(position)
+    }
+
+    override fun updateDebt(position: Int) {
+        openDebtUpdateDialog()
     }
 
     //TODO dialogs should be a class
@@ -94,6 +99,16 @@ class MainActivity : AppCompatActivity(), ILongClick {
 
         binding.btnCalculate.setOnClickListener {
             calculateDebts()
+        }
+    }
+
+    private fun openDebtUpdateDialog() {
+        val bindingDebt = LayoutDialogAddDebtBinding.inflate(layoutInflater)
+        val dialog = Dialog(this)
+
+        dialog.apply {
+            setContentView(bindingDebt.root)
+            show()
         }
     }
 
