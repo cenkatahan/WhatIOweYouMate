@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity(), ILongClick {
     private lateinit var friends: ArrayList<Friend>
     private var friendAdapter: FriendAdapter? = null
     private var totalPayment: Int = 0
-    private var swipeToDelete: SwipeToDelete? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,11 +88,11 @@ class MainActivity : AppCompatActivity(), ILongClick {
     }
 
     private fun setListeners() {
-        binding.btnCreate.setOnClickListener {
+        binding.fabCreate.setOnClickListener {
             openAddDialog()
         }
 
-        binding.fabRemove.setOnClickListener {
+        binding.btnRemove.setOnClickListener {
             openRemoveDialog()
         }
 
