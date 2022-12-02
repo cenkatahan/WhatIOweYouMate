@@ -1,4 +1,4 @@
-package com.atahan.whatioweyoumate
+package com.atahan.whatioweyoumate.view
 
 import android.app.Dialog
 import android.os.Bundle
@@ -16,15 +16,17 @@ import com.atahan.whatioweyoumate.databinding.LayoutDialogCreateGroupBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.model.Friend
 import com.atahan.whatioweyoumate.interfaces.ILongClick
-import com.atahan.whatioweyoumate.utils.SwipeToDelete
+import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
+import com.atahan.whatioweyoumate.presenter.MainActivityPresenter
 import com.google.android.material.snackbar.Snackbar
 
 
-class MainActivity : AppCompatActivity(), ILongClick {
+class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IView {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingDialog: LayoutDialogCreateGroupBinding
     private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
     private lateinit var friends: ArrayList<Friend>
+    private lateinit var presenter: MainActivityPresenter
     private var friendAdapter: FriendAdapter? = null
     private var totalPayment: Int = 0
 
@@ -33,21 +35,37 @@ class MainActivity : AppCompatActivity(), ILongClick {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        presenter = MainActivityPresenter(this).apply {
+            setOnCLickListeners()
+        }
+
         friends = ArrayList()
-        setListeners()
         setAdapter()
     }
 
+    override fun setOnCLickListeners() {
+        binding.fabCreate.setOnClickListener {
+            presenter.add()
+        }
+
+        binding.btnRemove.setOnClickListener {
+            presenter.remove()
+        }
+
+        binding.btnCalculate.setOnClickListener {
+            presenter.calculate()
+        }
+    }
+
     override fun edit(position: Int) {
-        openEditDialog(position)
+        presenter.updateItemAt(position)
     }
 
     override fun updateDebt(position: Int) {
-        openDebtUpdateDialog()
+        openDebChangeDialog()
     }
 
-    //TODO dialogs should be a class
-    private fun openEditDialog(position: Int) {
+    override fun openUpdateDialog(position: Int) {
         bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
 
@@ -87,21 +105,7 @@ class MainActivity : AppCompatActivity(), ILongClick {
         }
     }
 
-    private fun setListeners() {
-        binding.fabCreate.setOnClickListener {
-            openAddDialog()
-        }
-
-        binding.btnRemove.setOnClickListener {
-            openRemoveDialog()
-        }
-
-        binding.btnCalculate.setOnClickListener {
-            calculateDebts()
-        }
-    }
-
-    private fun openDebtUpdateDialog() {
+    private fun openDebChangeDialog() {
         val bindingDebt = LayoutDialogAddDebtBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
 
@@ -156,7 +160,7 @@ class MainActivity : AppCompatActivity(), ILongClick {
         }).attachToRecyclerView(binding.recyclerview)
     }
 
-    private fun openAddDialog() {
+    override fun openAddDialog() {
         bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
 
@@ -199,7 +203,7 @@ class MainActivity : AppCompatActivity(), ILongClick {
         return bindingDialog.etName.text.toString() == "" || bindingDialog.etPayment.text.toString() == ""
     }
 
-    private fun openRemoveDialog() {
+    override fun openRemoveDialog() {
         if (friends.size <= SIZE_ZERO) {
             Toast.makeText(this, "List is empty.", Toast.LENGTH_SHORT).show()
             return
@@ -210,7 +214,7 @@ class MainActivity : AppCompatActivity(), ILongClick {
 
         bindingRemoveDialog.btnRemove.setOnClickListener {
             binding.btnCalculate.isEnabled = false
-            clearFriends()
+            presenter.clearList()
             removeDialog.dismiss()
         }
 
@@ -225,7 +229,7 @@ class MainActivity : AppCompatActivity(), ILongClick {
 
     }
 
-    private fun clearFriends() {
+    override fun clearFriends() {
         if (friends.size > SIZE_ZERO) {
             friends.clear()
             totalPayment = SIZE_ZERO
@@ -238,7 +242,7 @@ class MainActivity : AppCompatActivity(), ILongClick {
         }
     }
 
-    private fun calculateDebts() {
+    override fun calculateDebts() {
         with(binding){
             recyclerview.visibility = View.GONE
             tvBill.visibility = View.VISIBLE
