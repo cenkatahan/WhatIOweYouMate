@@ -19,16 +19,21 @@ import com.atahan.whatioweyoumate.interfaces.ILongClick
 import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
 import com.atahan.whatioweyoumate.presenter.MainActivityPresenter
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IView {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingDialog: LayoutDialogCreateGroupBinding
     private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
     private lateinit var friends: ArrayList<Friend>
     private lateinit var presenter: MainActivityPresenter
-    private var friendAdapter: FriendAdapter? = null
+
     private var totalPayment: Int = 0
+
+    @Inject
+    lateinit var adapterFriend: FriendAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +74,10 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
         bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
 
-        bindingDialog.etName.text = Editable.Factory.getInstance().newEditable(friends[position].name)
-        bindingDialog.etPayment.text = Editable.Factory.getInstance().newEditable(friends[position].payment.toString())
+        bindingDialog.etName.text =
+            Editable.Factory.getInstance().newEditable(friends[position].name)
+        bindingDialog.etPayment.text =
+            Editable.Factory.getInstance().newEditable(friends[position].payment.toString())
         val paymentBeforeChange = friends[position].payment
 
 
@@ -90,7 +97,7 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
                     binding.btnCalculate.isEnabled = true
                 }
 
-                friendAdapter?.notifyDataSetChanged()
+                adapterFriend.notifyDataSetChanged()
                 dialog.dismiss()
             }
 
@@ -116,11 +123,12 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
     }
 
     private fun setAdapter() {
-        friendAdapter = FriendAdapter(friends, this)
         with(binding.recyclerview) {
+            adapterFriend.differ.submitList(friends)
             layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-            adapter = friendAdapter
+            adapter = this@MainActivity.adapterFriend
+            adapterFriend.setLongClickListener(this@MainActivity)
         }
 
         friends.forEach {
@@ -129,7 +137,8 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
 
         binding.tvTotalPayment.text = "Total Payment: $totalPayment"
 
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT){
+        ItemTouchHelper(object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -143,13 +152,17 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
                 val deletedFriend: Friend =
                     friends[position]
                 friends.removeAt(position)
-                friendAdapter?.notifyItemRemoved(viewHolder.adapterPosition)
-                Snackbar.make(binding.recyclerview, "Deleted " + deletedFriend.name, Snackbar.LENGTH_LONG)
+                adapterFriend.notifyItemRemoved(viewHolder.adapterPosition)
+                Snackbar.make(
+                    binding.recyclerview,
+                    "Deleted " + deletedFriend.name,
+                    Snackbar.LENGTH_LONG
+                )
                     .setAction(
                         "Undo"
                     ) {
                         friends.add(position, deletedFriend)
-                        friendAdapter?.notifyItemInserted(position)
+                        adapterFriend.notifyItemRemoved(viewHolder.adapterPosition)
                         totalPayment += deletedFriend.payment
                         binding.tvTotalPayment.text = "Total Payment: $totalPayment"
                     }.show()
@@ -234,8 +247,9 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
             friends.clear()
             totalPayment = SIZE_ZERO
         }
-        with(binding){
-            recyclerview.adapter = FriendAdapter(friends, this@MainActivity)
+        with(binding) {
+            recyclerview.adapter = FriendAdapter()
+            adapterFriend.setLongClickListener(this@MainActivity)
             tvTotalPayment.text = "Total Payment: 0"
             recyclerview.visibility = View.VISIBLE
             tvBill.visibility = View.GONE
@@ -243,7 +257,7 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
     }
 
     override fun calculateDebts() {
-        with(binding){
+        with(binding) {
             recyclerview.visibility = View.GONE
             tvBill.visibility = View.VISIBLE
         }
