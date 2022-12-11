@@ -1,8 +1,15 @@
 package com.atahan.whatioweyoumate.presenter
 
 import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
+import javax.inject.Inject
 
-class MainActivityPresenter(private val view: MainActivityContractor.IView): MainActivityContractor.IPresenter{
+class MainActivityPresenter @Inject constructor(): MainActivityContractor.IPresenter{
+
+    private lateinit var view: MainActivityContractor.IView
+//        get() = field
+//        set(value) {
+//            field = value
+//        }
 
     override fun setListeners() {
         view.setOnCLickListeners()
@@ -28,5 +35,9 @@ class MainActivityPresenter(private val view: MainActivityContractor.IView): Mai
         view.calculateDebts()
     }
 
+
+    fun setView(iView: MainActivityContractor.IView) {
+        view = iView
+    }
 
 }
