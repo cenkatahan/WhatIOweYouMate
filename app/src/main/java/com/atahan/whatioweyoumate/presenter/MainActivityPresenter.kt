@@ -6,10 +6,6 @@ import javax.inject.Inject
 class MainActivityPresenter @Inject constructor(): MainActivityContractor.IPresenter{
 
     private lateinit var view: MainActivityContractor.IView
-//        get() = field
-//        set(value) {
-//            field = value
-//        }
 
     override fun setListeners() {
         view.setOnCLickListeners()
