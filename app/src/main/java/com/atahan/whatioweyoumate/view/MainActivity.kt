@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
     private lateinit var friends: ArrayList<Friend>
     private var totalPayment: Int = 0
 
+
     @Inject
     lateinit var presenter: MainActivityPresenter
 
@@ -99,8 +100,11 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
                     binding.btnCalculate.isEnabled = true
                 }
 
-                //diffutil
-                friendAdapter.notifyDataSetChanged()
+                friendAdapter.apply {
+                    differ.submitList(friends)
+                    binding.recyclerview.adapter = this
+                }
+
                 dialog.dismiss()
             }
 
