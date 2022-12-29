@@ -18,6 +18,7 @@ import com.atahan.whatioweyoumate.model.Friend
 import com.atahan.whatioweyoumate.interfaces.ILongClick
 import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
 import com.atahan.whatioweyoumate.presenter.MainActivityPresenter
+import com.atahan.whatioweyoumate.repository.FriendRepository
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -36,6 +37,9 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
 
     @Inject
     lateinit var friendAdapter: FriendAdapter
+
+    @Inject
+    lateinit var repository: FriendRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +98,15 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
                 val name = etName.text?.toString()
 
                 increasePayment(payment!!)
-                friends[position] = Friend(name!!, payment)
+                friends[position] = Friend(0, name!!, payment)
+                //TODO test and remove old codes.
+//                repository.update(
+//                    Friend(
+//                        id = 0,
+//                        name = name,
+//                        payment = payment
+//                    )
+//                )
 
                 if (friends.size >= SIZE_TWO) {
                     binding.btnCalculate.isEnabled = true
@@ -102,6 +114,8 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
 
                 friendAdapter.apply {
                     differ.submitList(friends)
+                    //TODO test and remove old codes.
+//                    differ.submitList(repository.getFriends())
                     binding.recyclerview.adapter = this
                 }
 
@@ -132,6 +146,8 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
     private fun setAdapter() {
         with(binding.recyclerview) {
             friendAdapter.differ.submitList(friends)
+            //TODO test and remove old codes.
+//            friendAdapter.differ.submitList(repository.getFriends())
             layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
             adapter = this@MainActivity.friendAdapter
@@ -156,6 +172,7 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
+                //TODO refactor with respect to room & repository.
                 val deletedFriend: Friend =
                     friends[position]
                 friends.removeAt(position)
@@ -194,7 +211,16 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
                 val name = etName.text?.toString()
 
                 increasePayment(payment!!)
-                friends.add(Friend(name!!, payment))
+                friends.add(Friend(0, name!!, payment))
+                //TODO test and remove old codes.
+                //TODO presenter.add after refactoring dialogs to fragment.
+//                repository.add(
+//                    Friend(
+//                        id = 0,
+//                        name = name,
+//                        payment = payment
+//                    )
+//                )
 
                 if (friends.size >= 2) {
                     binding.btnCalculate.isEnabled = true
@@ -252,6 +278,8 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
     override fun clearFriends() {
         if (friends.size > SIZE_ZERO) {
             friends.clear()
+            //TODO test and remove old codes.
+//            repository.removeFriends()
             totalPayment = SIZE_ZERO
         }
         with(binding) {
