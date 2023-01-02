@@ -10,8 +10,11 @@ interface FriendDao {
     @Insert
     fun save(friend: Friend)
 
+    @Query("SELECT * FROM $TABLE_FRIEND WHERE id=:id")
+    fun getFriend(id: Int): Friend
+
     @Query("SELECT * FROM $TABLE_FRIEND")
-    fun getFriends(): ArrayList<Friend>
+    fun getFriends(): List<Friend>
 
     @Delete
     fun delete(friend: Friend)

@@ -10,12 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.atahan.whatioweyoumate.R
 import com.atahan.whatioweyoumate.model.Friend
 import com.atahan.whatioweyoumate.interfaces.ILongClick
+import com.atahan.whatioweyoumate.repository.FriendRepository
 import javax.inject.Inject
 
 class FriendAdapter @Inject constructor() :
     RecyclerView.Adapter<FriendAdapter.FriendHolder>() {
 
     private lateinit var onILongClick: ILongClick
+
+    @Inject
+    lateinit var repository: FriendRepository
 
     private val differCallback = object : DiffUtil.ItemCallback<Friend>() {
         override fun areItemsTheSame(oldItem: Friend, newItem: Friend): Boolean {

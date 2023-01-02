@@ -28,9 +28,7 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingDialog: LayoutDialogCreateGroupBinding
     private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
-    private lateinit var friends: ArrayList<Friend>
     private var totalPayment: Int = 0
-
 
     @Inject
     lateinit var presenter: MainActivityPresenter
@@ -40,6 +38,9 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
 
     @Inject
     lateinit var repository: FriendRepository
+
+    @Inject
+    lateinit var friend: Friend
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +52,13 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
             setListeners()
         }
 
-        friends = ArrayList()
         setAdapter()
+
+        //TODO remove later.
+        binding.tvTotalPayment.setOnClickListener {
+            finish()
+            startActivity(intent)
+        }
     }
 
     override fun setOnCLickListeners() {
@@ -81,11 +87,13 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
         bindingDialog = LayoutDialogCreateGroupBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
 
+        val currentFriend = friendAdapter.differ.currentList[position]
+
         bindingDialog.etName.text =
-            Editable.Factory.getInstance().newEditable(friends[position].name)
+            Editable.Factory.getInstance().newEditable(currentFriend.name)
         bindingDialog.etPayment.text =
-            Editable.Factory.getInstance().newEditable(friends[position].payment.toString())
-        val paymentBeforeChange = friends[position].payment
+            Editable.Factory.getInstance().newEditable(currentFriend.payment.toString())
+        val paymentBeforeChange = currentFriend.payment
 
 
         with(bindingDialog) {
@@ -98,24 +106,20 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
                 val name = etName.text?.toString()
 
                 increasePayment(payment!!)
-                friends[position] = Friend(0, name!!, payment)
-                //TODO test and remove old codes.
-//                repository.update(
-//                    Friend(
-//                        id = 0,
-//                        name = name,
-//                        payment = payment
-//                    )
-//                )
+                repository.update(
+                    Friend(
+                        id = currentFriend.id,
+                        name = name!!,
+                        payment = payment
+                    )
+                )
 
-                if (friends.size >= SIZE_TWO) {
+                if (repository.getFriends().size >= SIZE_TWO) {
                     binding.btnCalculate.isEnabled = true
                 }
 
                 friendAdapter.apply {
-                    differ.submitList(friends)
-                    //TODO test and remove old codes.
-//                    differ.submitList(repository.getFriends())
+                    differ.submitList(repository.getFriends())
                     binding.recyclerview.adapter = this
                 }
 
@@ -145,16 +149,14 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
 
     private fun setAdapter() {
         with(binding.recyclerview) {
-            friendAdapter.differ.submitList(friends)
-            //TODO test and remove old codes.
-//            friendAdapter.differ.submitList(repository.getFriends())
+            friendAdapter.differ.submitList(repository.getFriends())
             layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
             adapter = this@MainActivity.friendAdapter
             friendAdapter.setLongClickListener(this@MainActivity)
         }
 
-        friends.forEach {
+        repository.getFriends().forEach {
             totalPayment += it.payment
         }
 
@@ -172,11 +174,10 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                //TODO refactor with respect to room & repository.
-                val deletedFriend: Friend =
-                    friends[position]
-                friends.removeAt(position)
-                friendAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+                val deletedFriend: Friend = friendAdapter.differ.currentList[position]
+                repository.remove(deletedFriend)
+                friendAdapter.differ.submitList(repository.getFriends())
+
                 Snackbar.make(
                     binding.recyclerview,
                     "Deleted " + deletedFriend.name,
@@ -185,11 +186,12 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
                     .setAction(
                         "Undo"
                     ) {
-                        friends.add(position, deletedFriend)
-                        friendAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+                        repository.add(deletedFriend)
+                        friendAdapter.differ.submitList(repository.getFriends())
                         totalPayment += deletedFriend.payment
                         binding.tvTotalPayment.text = "Total Payment: $totalPayment"
-                    }.show()
+                    }
+                    .show()
 
                 totalPayment -= deletedFriend.payment
                 binding.tvTotalPayment.text = "Total Payment: $totalPayment"
@@ -211,18 +213,17 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
                 val name = etName.text?.toString()
 
                 increasePayment(payment!!)
-                friends.add(Friend(0, name!!, payment))
-                //TODO test and remove old codes.
                 //TODO presenter.add after refactoring dialogs to fragment.
-//                repository.add(
-//                    Friend(
-//                        id = 0,
-//                        name = name,
-//                        payment = payment
-//                    )
-//                )
+                repository.add(
+                    Friend(
+                        id = 0,
+                        name = name!!,
+                        payment = payment
+                    )
+                )
 
-                if (friends.size >= 2) {
+
+                if (repository.getFriends().size >= 2) {
                     binding.btnCalculate.isEnabled = true
                 }
 
@@ -250,7 +251,7 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
     }
 
     override fun openRemoveDialog() {
-        if (friends.size <= SIZE_ZERO) {
+        if (repository.getFriends().size <= SIZE_ZERO) {
             Toast.makeText(this, "List is empty.", Toast.LENGTH_SHORT).show()
             return
         }
@@ -276,10 +277,8 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
     }
 
     override fun clearFriends() {
-        if (friends.size > SIZE_ZERO) {
-            friends.clear()
-            //TODO test and remove old codes.
-//            repository.removeFriends()
+        if (repository.getFriends().size > SIZE_ZERO) {
+            repository.removeFriends()
             totalPayment = SIZE_ZERO
         }
         with(binding) {
@@ -298,8 +297,8 @@ class MainActivity : AppCompatActivity(), ILongClick, MainActivityContractor.IVi
         }
 
         var bill = "================BILL================\n"
-        friends.forEach { friend ->
-            val debtPerEach = friend.payment / friends.size
+        repository.getFriends().forEach { friend ->
+            val debtPerEach = friend.payment / repository.getFriends().size
             bill += "->Everyone should pay $debtPerEach to ${friend.name}\n"
         }
         binding.tvBill.text = bill
