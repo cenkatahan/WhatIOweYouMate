@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.atahan.whatioweyoumate.R
 import com.atahan.whatioweyoumate.databinding.FragmentFriendListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FriendListFragment : Fragment() {
 
     private lateinit var binding: FragmentFriendListBinding
@@ -19,14 +21,14 @@ class FriendListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentFriendListBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        //setup recyclerview, adapter & stuff.
     }
 
 }
