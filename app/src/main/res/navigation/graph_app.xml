@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/graph_app"
+    app:startDestination="@id/friendListFragment">
+
+    <fragment
+        android:id="@+id/friendListFragment"
+        android:name="com.atahan.whatioweyoumate.view.FriendListFragment"
+        android:label="fragment_friend_list"
+        tools:layout="@layout/fragment_friend_list" >
+        <action
+            android:id="@+id/action_friendListFragment_to_formFragment2"
+            app:destination="@id/formFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/formFragment2"
+        android:name="com.atahan.whatioweyoumate.view.FormFragment"
+        android:label="FormFragment" >
+        <action
+            android:id="@+id/action_formFragment2_to_friendListFragment"
+            app:destination="@id/friendListFragment" />
+    </fragment>
+</navigation>
