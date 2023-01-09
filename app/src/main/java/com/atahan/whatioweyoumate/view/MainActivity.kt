@@ -1,25 +1,14 @@
 package com.atahan.whatioweyoumate.view
 
-import android.app.Dialog
 import android.os.Bundle
-import android.text.Editable
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.ActivityMainBinding
-import com.atahan.whatioweyoumate.databinding.LayoutDialogAddDebtBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogCreateGroupBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.model.Friend
-import com.atahan.whatioweyoumate.interfaces.ILongClick
-import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
-import com.atahan.whatioweyoumate.presenter.MainActivityPresenter
+import com.atahan.whatioweyoumate.presenter.FriendListPresenter
 import com.atahan.whatioweyoumate.repository.FriendRepository
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -31,7 +20,7 @@ class MainActivity : AppCompatActivity()  {
     private var totalPayment: Int = 0
 
     @Inject
-    lateinit var presenter: MainActivityPresenter
+    lateinit var presenter: FriendListPresenter
 
     @Inject
     lateinit var friendAdapter: FriendAdapter

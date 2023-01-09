@@ -18,7 +18,7 @@ import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.interfaces.ILongClick
 import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
 import com.atahan.whatioweyoumate.model.Friend
-import com.atahan.whatioweyoumate.presenter.MainActivityPresenter
+import com.atahan.whatioweyoumate.presenter.FriendListPresenter
 import com.atahan.whatioweyoumate.repository.FriendRepository
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +32,7 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
 
     //Change presenter class name
     @Inject
-    lateinit var presenter: MainActivityPresenter
+    lateinit var presenter: FriendListPresenter
 
     @Inject
     lateinit var friendAdapter: FriendAdapter

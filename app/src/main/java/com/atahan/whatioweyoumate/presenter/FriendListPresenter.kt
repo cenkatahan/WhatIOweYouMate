@@ -3,7 +3,7 @@ package com.atahan.whatioweyoumate.presenter
 import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
 import javax.inject.Inject
 
-class MainActivityPresenter @Inject constructor() : MainActivityContractor.IPresenter {
+class FriendListPresenter @Inject constructor() : MainActivityContractor.IPresenter {
 
     private lateinit var view: MainActivityContractor.IView
 
