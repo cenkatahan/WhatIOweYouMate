@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_friend_list" >
         <action
             android:id="@+id/action_friendListFragment_to_formFragment2"
-            app:destination="@id/formFragment2" />
+            app:destination="@id/formFragment2"
+            app:popUpTo="@id/formFragment2"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/formFragment2"
@@ -21,6 +23,8 @@
         tools:layout="@layout/fragment_form">
         <action
             android:id="@+id/action_formFragment2_to_friendListFragment"
-            app:destination="@id/friendListFragment" />
+            app:destination="@id/friendListFragment"
+            app:popUpTo="@id/friendListFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>
