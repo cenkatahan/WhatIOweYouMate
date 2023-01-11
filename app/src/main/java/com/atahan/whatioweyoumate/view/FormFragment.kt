@@ -10,24 +10,25 @@ import androidx.navigation.fragment.findNavController
 import com.atahan.whatioweyoumate.R
 import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.FragmentFormBinding
+import com.atahan.whatioweyoumate.interfaces.FormContractor
 import com.atahan.whatioweyoumate.model.Friend
+import com.atahan.whatioweyoumate.presenter.FormPresenter
 import com.atahan.whatioweyoumate.repository.FriendRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FormFragment : Fragment() {
+class FormFragment : Fragment(), FormContractor.IView {
     private lateinit var binding: FragmentFormBinding
+
+    @Inject
+    lateinit var presenter: FormPresenter
 
     @Inject
     lateinit var friendAdapter: FriendAdapter
 
     @Inject
     lateinit var repository: FriendRepository
-
-    //TODO Implement Presenter.
-//    @Inject
-//    lateinit var presenter: FormPresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,50 +46,35 @@ class FormFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnConfirm.setOnClickListener {
-            //presenter.method
-            /*
-            * Code
-            * */
+        presenter.setView(this)
 
-            //repository.save(item)
+//        TODO if argument not null
+//        val currentFriend = friendAdapter.differ.currentList[argumentID]
+//        binding.etName.text =
+//            Editable.Factory.getInstance().newEditable(currentFriend.name)
+//        binding.etPayment.text =
+//            Editable.Factory.getInstance().newEditable(currentFriend.payment.toString())
+
+        binding.btnConfirm.setOnClickListener {
             if (checkDialogEmptyFields()) {
                 return@setOnClickListener
             }
-//                totalPayment -= paymentBeforeChange
-            val payment = binding.etPayment.text?.toString()?.toInt()
-            val name = binding.etName.text?.toString()
 
-            increasePayment(payment!!)
-            repository.update(
-                Friend(
-                    id = 0,
-                    name = name!!,
-                    payment = payment
-                )
-            )
-
-            //TODO Check if this code is needed.
-//            friendAdapter.apply {
-//                differ.submitList(repository.getFriends())
-//                    binding.recyclerview.adapter = this
-//            }
-
-            //navigate back
-            //presenter.navigate() ??
-            this.findNavController().navigate(R.id.action_formFragment2_to_friendListFragment)
+            presenter.apply {
+                addItem()
+                navigate()
+            }
         }
 
         binding.btnDismiss.setOnClickListener {
-            //navigate back
-            //presenter.method()
-            this.findNavController().navigate(R.id.action_formFragment2_to_friendListFragment)
+            presenter.navigate()
         }
     }
 
     fun addItem(position: Int) {
 
         //TODO position parameter should be argument. So, no need a parameter.
+        //TODO this code block can be in onviewcreated and checks argument.
         when (position) {
             null -> {
                 //presenter.addItem()
@@ -139,6 +125,39 @@ class FormFragment : Fragment() {
         }
     }
 
+    override fun addFriend() {
+        val payment = binding.etPayment.text?.toString()?.toInt()
+        val name = binding.etName.text?.toString()
+
+        increasePayment(payment!!)
+        repository.add(
+            Friend(
+                id = 0,
+                name = name!!,
+                payment = payment
+            )
+        )
+    }
+
+    override fun updateFriendAt(id: Int) {
+        val currentFriend = friendAdapter.differ.currentList[id]
+        val payment = binding.etPayment.text?.toString()?.toInt()
+        val name = binding.etName.text?.toString()
+
+        increasePayment(payment!!)
+        repository.update(
+            Friend(
+                id = currentFriend.id,
+                name = name!!,
+                payment = payment
+            )
+        )
+    }
+
+    override fun navigateBack() {
+        this.findNavController().navigate(R.id.action_formFragment2_to_friendListFragment)
+    }
+
     private fun increasePayment(payment: Int) {
 //        totalPayment += payment
 //        binding.tvTotalPayment.text = "Total Payment: $totalPayment"
@@ -146,4 +165,5 @@ class FormFragment : Fragment() {
 
     private fun checkDialogEmptyFields() =
         binding.etName.text.toString() == "" || binding.etPayment.text.toString() == ""
+
 }
