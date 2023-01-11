@@ -30,7 +30,6 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
     private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
     private var totalPayment: Int = 0
 
-    //Change presenter class name
     @Inject
     lateinit var presenter: FriendListPresenter
 
@@ -71,6 +70,14 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
             this.activity?.finish()
             startActivity(this.activity?.intent)
         }
+
+        repository.getFriends().forEach {
+            totalPayment += it.payment
+        }
+        //TODO review
+//        binding.tvTotalPayment.text = repository.getFriends().map {
+//            it.payment
+//        }.sum().toString()
     }
 
     override fun edit(position: Int) {
