@@ -199,6 +199,7 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val deletedFriend: Friend = friendAdapter.differ.currentList[position]
+                totalPayment -= deletedFriend.payment
                 repository.remove(deletedFriend)
                 friendAdapter.differ.submitList(repository.getFriends())
 
@@ -216,18 +217,11 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
                         binding.tvTotalPayment.text = "Total Payment: $totalPayment"
                     }
                     .show()
-
-                totalPayment -= deletedFriend.payment
+                totalPayment = repository.getFriends().map { it.payment }.sum()
                 binding.tvTotalPayment.text = "Total Payment: $totalPayment"
             }
         }).attachToRecyclerView(binding.recyclerview)
     }
-
-    private fun increasePayment(payment: Int) {
-        totalPayment += payment
-        binding.tvTotalPayment.text = "Total Payment: $totalPayment"
-    }
-
 
     companion object {
         private const val SIZE_ZERO = 0
