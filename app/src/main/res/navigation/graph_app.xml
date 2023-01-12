@@ -26,5 +26,10 @@
             app:destination="@id/friendListFragment"
             app:popUpTo="@id/friendListFragment"
             app:popUpToInclusive="true"/>
+        <argument
+            android:name="friend"
+            app:argType="com.atahan.whatioweyoumate.model.Friend"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>
