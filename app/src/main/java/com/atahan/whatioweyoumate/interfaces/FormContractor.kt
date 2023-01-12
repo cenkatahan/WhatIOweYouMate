@@ -2,15 +2,13 @@ package com.atahan.whatioweyoumate.interfaces
 
 interface FormContractor {
     interface IView {
-        fun addFriend()
-        fun updateFriendAt(id: Int)
+        fun confirmFriend()
         fun navigateBack()
     }
 
 
     interface IPresenter {
-        fun addItem()
-        fun updateItemAt(id: Int)
+        fun confirmItem()
         fun navigate()
     }
 }
