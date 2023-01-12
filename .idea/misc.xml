@@ -14,7 +14,7 @@
         <entry key="app/src/main/res/layout/layout_dialog_add_debt.xml" value="0.375" />
         <entry key="app/src/main/res/layout/layout_dialog_create_group.xml" value="0.33" />
         <entry key="app/src/main/res/layout/layout_dialog_remove.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/layout_item_friend.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/layout_item_friend.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_item_person.xml" value="0.375" />
         <entry key="app/src/main/res/layout/testlayout.xml" value="0.22327898550724637" />
       </map>
