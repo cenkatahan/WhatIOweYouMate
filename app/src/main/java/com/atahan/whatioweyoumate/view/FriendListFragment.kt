@@ -58,19 +58,11 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //setup recyclerview, adapter & stuff.
-
         presenter.apply {
             setView(this@FriendListFragment)
         }
         setOnCLickListeners()
         setAdapter()
-
-        //TODO remove later.
-        binding.tvTotalPayment.setOnClickListener {
-            this.activity?.finish()
-            startActivity(this.activity?.intent)
-        }
 
         repository.getFriends().forEach {
             totalPayment += it.payment
@@ -82,7 +74,6 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
     }
 
     override fun updateDebt(position: Int) {
-        TODO("Not yet implemented")
         //change debt value
     }
 
@@ -145,7 +136,6 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
         }
 
         binding.btnCalculate.setOnClickListener {
-            //navigate to result fragment
             if (repository.getFriends().count() < SIZE_TWO) {
                 Toast.makeText(requireContext(), "At least two friend is needed.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -156,17 +146,6 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
 
     override fun calculateDebts() {
         view?.findNavController()?.navigate(R.id.action_friendListFragment_to_calculationResultFragment2, null)
-        with(binding) {
-            recyclerview.visibility = View.GONE
-            tvBill.visibility = View.VISIBLE
-        }
-
-        var bill = "================BILL================\n"
-        repository.getFriends().forEach { friend ->
-            val debtPerEach = friend.payment / repository.getFriends().size
-            bill += "->Everyone should pay $debtPerEach to ${friend.name}\n"
-        }
-        binding.tvBill.text = bill
     }
 
 
