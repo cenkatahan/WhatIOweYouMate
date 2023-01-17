@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.atahan.whatioweyoumate.R
 import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.FragmentFriendListBinding
+import com.atahan.whatioweyoumate.databinding.LayoutDialogAddDebtBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.interfaces.ILongClick
 import com.atahan.whatioweyoumate.interfaces.FriendsContractor
@@ -73,8 +74,9 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
         presenter.updateItemAt(position)
     }
 
-    override fun updateDebt(position: Int) {
+    override fun updateDebt(id: Int) {
         //change debt value
+        //remove this and implement to fragment.
     }
 
     override fun openAddDialog() {
