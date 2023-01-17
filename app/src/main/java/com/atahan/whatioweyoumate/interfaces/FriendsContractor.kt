@@ -8,8 +8,8 @@ interface FriendsContractor {
 
     interface IFriendsView {
         fun openAddDialog()
-        fun openUpdateDialog(position: Int)
-        fun openRemoveDialog()
+        fun updateFriendAt(id: Int)
+        fun removeFriends()
         fun clearFriends()
         fun calculateDebts()
     }

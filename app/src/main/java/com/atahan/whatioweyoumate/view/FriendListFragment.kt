@@ -78,7 +78,6 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
     }
 
     override fun edit(position: Int) {
-        //navigate form fragment
         presenter.updateItemAt(position)
     }
 
@@ -91,13 +90,13 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
         this.findNavController().navigate(R.id.action_friendListFragment_to_formFragment2)
     }
 
-    override fun openUpdateDialog(position: Int) {
-        val currentFriend = friendAdapter.differ.currentList[position]
+    override fun updateFriendAt(id: Int) {
+        val currentFriend = friendAdapter.differ.currentList[id]
         val bundle = bundleOf("friend" to currentFriend)
         view?.findNavController()?.navigate(R.id.action_friendListFragment_to_formFragment2, bundle)
     }
 
-    override fun openRemoveDialog() {
+    override fun removeFriends() {
         if (repository.getFriends().size <= SIZE_ZERO) {
             Toast.makeText(context, "List is empty.", Toast.LENGTH_SHORT).show()
             return
@@ -147,6 +146,7 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
         }
 
         binding.btnCalculate.setOnClickListener {
+            //navigate to result fragment
             presenter.calculate()
         }
     }

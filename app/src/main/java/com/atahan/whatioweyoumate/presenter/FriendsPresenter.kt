@@ -14,11 +14,11 @@ constructor() :
     }
 
     override fun updateItemAt(position: Int) {
-        view.openUpdateDialog(position)
+        view.updateFriendAt(position)
     }
 
     override fun remove() {
-        view.openRemoveDialog()
+        view.removeFriends()
     }
 
     override fun clearList() {
