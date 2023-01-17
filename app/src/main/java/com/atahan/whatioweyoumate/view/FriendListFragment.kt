@@ -106,7 +106,6 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
         val removeDialog = Dialog(requireContext())
 
         bindingRemoveDialog.btnRemove.setOnClickListener {
-            binding.btnCalculate.isEnabled = false
             presenter.clearList()
             removeDialog.dismiss()
         }
@@ -147,11 +146,16 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
 
         binding.btnCalculate.setOnClickListener {
             //navigate to result fragment
+            if (repository.getFriends().count() < SIZE_TWO) {
+                Toast.makeText(requireContext(), "At least two friend is needed.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             presenter.calculate()
         }
     }
 
     override fun calculateDebts() {
+        view?.findNavController()?.navigate(R.id.action_friendListFragment_to_calculationResultFragment2, null)
         with(binding) {
             recyclerview.visibility = View.GONE
             tvBill.visibility = View.VISIBLE
