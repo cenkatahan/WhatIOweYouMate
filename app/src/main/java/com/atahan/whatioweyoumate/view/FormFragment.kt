@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.atahan.whatioweyoumate.R
-import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.FragmentFormBinding
 import com.atahan.whatioweyoumate.interfaces.FormContractor
 import com.atahan.whatioweyoumate.model.Friend
@@ -25,9 +24,6 @@ class FormFragment : Fragment(), FormContractor.IView {
 
     @Inject
     lateinit var presenter: FormPresenter
-
-    @Inject
-    lateinit var friendAdapter: FriendAdapter
 
     @Inject
     lateinit var repository: FriendRepository

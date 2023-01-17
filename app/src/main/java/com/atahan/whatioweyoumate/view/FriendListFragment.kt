@@ -18,25 +18,25 @@ import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.FragmentFriendListBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.interfaces.ILongClick
-import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
+import com.atahan.whatioweyoumate.interfaces.FriendsContractor
 import com.atahan.whatioweyoumate.model.Friend
-import com.atahan.whatioweyoumate.presenter.FriendListPresenter
+import com.atahan.whatioweyoumate.presenter.FriendsPresenter
 import com.atahan.whatioweyoumate.repository.FriendRepository
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView {
+class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsView {
     private lateinit var binding: FragmentFriendListBinding
     private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
     private var totalPayment: Int = 0
 
     @Inject
-    lateinit var presenter: FriendListPresenter
+    lateinit var friendAdapter: FriendAdapter
 
     @Inject
-    lateinit var friendAdapter: FriendAdapter
+    lateinit var presenter: FriendsPresenter
 
     @Inject
     lateinit var repository: FriendRepository
@@ -62,9 +62,8 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
 
         presenter.apply {
             setView(this@FriendListFragment)
-            setListeners()
         }
-
+        setOnCLickListeners()
         setAdapter()
 
         //TODO remove later.
@@ -76,10 +75,6 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
         repository.getFriends().forEach {
             totalPayment += it.payment
         }
-        //TODO review
-//        binding.tvTotalPayment.text = repository.getFriends().map {
-//            it.payment
-//        }.sum().toString()
     }
 
     override fun edit(position: Int) {
@@ -90,20 +85,6 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
     override fun updateDebt(position: Int) {
         TODO("Not yet implemented")
         //change debt value
-    }
-
-    override fun setOnCLickListeners() {
-        binding.fabCreate.setOnClickListener {
-            presenter.add()
-        }
-
-        binding.btnRemove.setOnClickListener {
-            presenter.remove()
-        }
-
-        binding.btnCalculate.setOnClickListener {
-            presenter.calculate()
-        }
     }
 
     override fun openAddDialog() {
@@ -153,6 +134,20 @@ class FriendListFragment : Fragment(), ILongClick, MainActivityContractor.IView 
             tvTotalPayment.text = "Total Payment: 0"
             recyclerview.visibility = View.VISIBLE
             tvBill.visibility = View.GONE
+        }
+    }
+
+    private fun setOnCLickListeners() {
+        binding.fabCreate.setOnClickListener {
+            presenter.add()
+        }
+
+        binding.btnRemove.setOnClickListener {
+            presenter.remove()
+        }
+
+        binding.btnCalculate.setOnClickListener {
+            presenter.calculate()
         }
     }
 

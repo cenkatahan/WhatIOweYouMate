@@ -1,8 +1,12 @@
 package com.atahan.whatioweyoumate.interfaces
 
-interface MainActivityContractor {
-    interface IView {
-        fun setOnCLickListeners()
+import com.atahan.whatioweyoumate.di.FragmentModule
+import dagger.Component
+
+
+interface FriendsContractor {
+
+    interface IFriendsView {
         fun openAddDialog()
         fun openUpdateDialog(position: Int)
         fun openRemoveDialog()
@@ -10,13 +14,11 @@ interface MainActivityContractor {
         fun calculateDebts()
     }
 
-    interface IPresenter {
-        fun setListeners()
+    interface IFriendsPresenter {
         fun add()
         fun updateItemAt(position: Int)
         fun remove()
         fun clearList()
         fun calculate()
     }
-
 }

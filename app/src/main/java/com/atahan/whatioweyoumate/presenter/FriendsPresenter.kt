@@ -1,15 +1,13 @@
 package com.atahan.whatioweyoumate.presenter
 
-import com.atahan.whatioweyoumate.interfaces.MainActivityContractor
+import com.atahan.whatioweyoumate.interfaces.FriendsContractor
 import javax.inject.Inject
 
-class FriendListPresenter @Inject constructor() : MainActivityContractor.IPresenter {
+class FriendsPresenter @Inject
+constructor() :
+    FriendsContractor.IFriendsPresenter {
 
-    private lateinit var view: MainActivityContractor.IView
-
-    override fun setListeners() {
-        view.setOnCLickListeners()
-    }
+    private lateinit var view: FriendsContractor.IFriendsView
 
     override fun add() {
         view.openAddDialog()
@@ -32,8 +30,7 @@ class FriendListPresenter @Inject constructor() : MainActivityContractor.IPresen
     }
 
 
-    fun setView(iView: MainActivityContractor.IView) {
+    fun setView(iView: FriendsContractor.IFriendsView) {
         view = iView
     }
-
 }
