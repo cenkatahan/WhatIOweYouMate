@@ -74,11 +74,6 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
         presenter.updateItemAt(position)
     }
 
-    override fun updateDebt(id: Int) {
-        //change debt value
-        //remove this and implement to fragment.
-    }
-
     override fun openAddDialog() {
         this.findNavController().navigate(R.id.action_friendListFragment_to_formFragment2)
     }

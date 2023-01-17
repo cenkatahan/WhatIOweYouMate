@@ -45,10 +45,6 @@ class FriendAdapter @Inject constructor() :
 
             name.text = currentFriend.name
             payment.text = currentFriend.payment.toString()
-            payment.setOnLongClickListener {
-                onILongClick.updateDebt(position)
-                true
-            }
 
             itemView.setOnLongClickListener {
                 onILongClick.edit(position)
