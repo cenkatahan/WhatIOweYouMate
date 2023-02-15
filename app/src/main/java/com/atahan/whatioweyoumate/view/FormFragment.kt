@@ -9,21 +9,17 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.atahan.whatioweyoumate.R
 import com.atahan.whatioweyoumate.databinding.FragmentFormBinding
-import com.atahan.whatioweyoumate.interfaces.FormContractor
 import com.atahan.whatioweyoumate.model.Friend
-import com.atahan.whatioweyoumate.presenter.FormPresenter
 import com.atahan.whatioweyoumate.repository.FriendRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FormFragment : Fragment(), FormContractor.IView {
+class FormFragment : Fragment() {
     private lateinit var binding: FragmentFormBinding
 
     private var currentFriend: Friend? = null
 
-    @Inject
-    lateinit var presenter: FormPresenter
 
     @Inject
     lateinit var repository: FriendRepository
@@ -36,19 +32,17 @@ class FormFragment : Fragment(), FormContractor.IView {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentFormBinding.inflate(layoutInflater, container, false)
+    ): View {
+        binding = FragmentFormBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter.setView(this)
+//        presenter.setView(this)
 
-        currentFriend = arguments?.let {
-            it.getParcelable("friend")
-        }
+        currentFriend = arguments?.getParcelable("friend")
 
         if (currentFriend != null) {
             with(binding) {
@@ -63,18 +57,18 @@ class FormFragment : Fragment(), FormContractor.IView {
             if (checkDialogEmptyFields()) {
                 return@setOnClickListener
             }
-            presenter.apply {
-                confirmItem()
-                navigate()
-            }
+//            presenter.apply {
+//                confirmItem()
+//                navigate()
+//            }
         }
 
         binding.btnDismiss.setOnClickListener {
-            presenter.navigate()
+//            presenter.navigate()
         }
     }
 
-    override fun confirmFriend() {
+    fun confirmFriend() {
         val payment = binding.etPayment.text?.toString()?.toInt()
         val name = binding.etName.text?.toString()
 
@@ -101,7 +95,7 @@ class FormFragment : Fragment(), FormContractor.IView {
 
     }
 
-    override fun navigateBack() {
+    fun navigateBack() {
         this.findNavController().navigate(R.id.action_formFragment2_to_friendListFragment)
     }
 

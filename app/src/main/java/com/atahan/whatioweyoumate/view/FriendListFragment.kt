@@ -16,19 +16,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.atahan.whatioweyoumate.R
 import com.atahan.whatioweyoumate.adapter.FriendAdapter
 import com.atahan.whatioweyoumate.databinding.FragmentFriendListBinding
-import com.atahan.whatioweyoumate.databinding.LayoutDialogAddDebtBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.interfaces.ILongClick
-import com.atahan.whatioweyoumate.interfaces.FriendsContractor
 import com.atahan.whatioweyoumate.model.Friend
-import com.atahan.whatioweyoumate.presenter.FriendsPresenter
 import com.atahan.whatioweyoumate.repository.FriendRepository
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsView {
+class FriendListFragment : Fragment(), ILongClick {
     private lateinit var binding: FragmentFriendListBinding
     private lateinit var bindingRemoveDialog: LayoutDialogRemoveBinding
     private var totalPayment: Int = 0
@@ -36,8 +33,6 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
     @Inject
     lateinit var friendAdapter: FriendAdapter
 
-    @Inject
-    lateinit var presenter: FriendsPresenter
 
     @Inject
     lateinit var repository: FriendRepository
@@ -59,9 +54,9 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.apply {
-            setView(this@FriendListFragment)
-        }
+//        presenter.apply {
+//            setView(this@FriendListFragment)
+//        }
         setOnCLickListeners()
         setAdapter()
 
@@ -71,20 +66,20 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
     }
 
     override fun edit(position: Int) {
-        presenter.updateItemAt(position)
+//        presenter.updateItemAt(position)
     }
 
-    override fun openAddDialog() {
+    fun openAddDialog() {
         this.findNavController().navigate(R.id.action_friendListFragment_to_formFragment2)
     }
 
-    override fun updateFriendAt(id: Int) {
+    fun updateFriendAt(id: Int) {
         val currentFriend = friendAdapter.differ.currentList[id]
         val bundle = bundleOf("friend" to currentFriend)
         view?.findNavController()?.navigate(R.id.action_friendListFragment_to_formFragment2, bundle)
     }
 
-    override fun removeFriends() {
+    fun removeFriends() {
         if (repository.getFriends().size <= SIZE_ZERO) {
             Toast.makeText(context, "List is empty.", Toast.LENGTH_SHORT).show()
             return
@@ -94,7 +89,7 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
         val removeDialog = Dialog(requireContext())
 
         bindingRemoveDialog.btnRemove.setOnClickListener {
-            presenter.clearList()
+//            presenter.clearList()
             removeDialog.dismiss()
         }
 
@@ -109,7 +104,7 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
 
     }
 
-    override fun clearFriends() {
+    fun clearFriends() {
         if (repository.getFriends().size > SIZE_ZERO) {
             repository.removeFriends()
             totalPayment = SIZE_ZERO
@@ -125,24 +120,29 @@ class FriendListFragment : Fragment(), ILongClick, FriendsContractor.IFriendsVie
 
     private fun setOnCLickListeners() {
         binding.fabCreate.setOnClickListener {
-            presenter.add()
+//            presenter.add()
         }
 
         binding.btnRemove.setOnClickListener {
-            presenter.remove()
+//            presenter.remove()
         }
 
         binding.btnCalculate.setOnClickListener {
             if (repository.getFriends().count() < SIZE_TWO) {
-                Toast.makeText(requireContext(), "At least two friend is needed.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "At least two friend is needed.",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
-            presenter.calculate()
+//            presenter.calculate()
         }
     }
 
-    override fun calculateDebts() {
-        view?.findNavController()?.navigate(R.id.action_friendListFragment_to_calculationResultFragment2, null)
+    fun calculateDebts() {
+        view?.findNavController()
+            ?.navigate(R.id.action_friendListFragment_to_calculationResultFragment2, null)
     }
 
 
