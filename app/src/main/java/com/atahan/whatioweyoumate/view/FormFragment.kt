@@ -40,8 +40,6 @@ class FormFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        presenter.setView(this)
-
         currentFriend = arguments?.getParcelable("friend")
 
         if (currentFriend != null) {
@@ -57,6 +55,8 @@ class FormFragment : Fragment() {
             if (checkDialogEmptyFields()) {
                 return@setOnClickListener
             }
+            confirmFriend()
+            navigateBack()
 //            presenter.apply {
 //                confirmItem()
 //                navigate()

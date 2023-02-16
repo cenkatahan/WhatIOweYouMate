@@ -2,12 +2,14 @@ package com.atahan.whatioweyoumate.view
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,7 +21,7 @@ import com.atahan.whatioweyoumate.databinding.FragmentFriendListBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.interfaces.ILongClick
 import com.atahan.whatioweyoumate.model.Friend
-import com.atahan.whatioweyoumate.repository.FriendRepository
+import com.atahan.whatioweyoumate.viewmodel.FriendListViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -33,16 +35,12 @@ class FriendListFragment : Fragment(), ILongClick {
     @Inject
     lateinit var friendAdapter: FriendAdapter
 
-
-    @Inject
-    lateinit var repository: FriendRepository
-
     @Inject
     lateinit var friend: Friend
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    //    @Inject
+//    lateinit var viewModel: FriendListViewModel
+    private val viewModel: FriendListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,13 +52,11 @@ class FriendListFragment : Fragment(), ILongClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        presenter.apply {
-//            setView(this@FriendListFragment)
-//        }
         setOnCLickListeners()
         setAdapter()
 
-        repository.getFriends().forEach {
+
+        viewModel.friendList.forEach {
             totalPayment += it.payment
         }
     }
@@ -69,7 +65,7 @@ class FriendListFragment : Fragment(), ILongClick {
 //        presenter.updateItemAt(position)
     }
 
-    fun openAddDialog() {
+    fun navigateForm() {
         this.findNavController().navigate(R.id.action_friendListFragment_to_formFragment2)
     }
 
@@ -80,7 +76,7 @@ class FriendListFragment : Fragment(), ILongClick {
     }
 
     fun removeFriends() {
-        if (repository.getFriends().size <= SIZE_ZERO) {
+        if (viewModel.friendList.size <= SIZE_ZERO) {
             Toast.makeText(context, "List is empty.", Toast.LENGTH_SHORT).show()
             return
         }
@@ -105,8 +101,8 @@ class FriendListFragment : Fragment(), ILongClick {
     }
 
     fun clearFriends() {
-        if (repository.getFriends().size > SIZE_ZERO) {
-            repository.removeFriends()
+        if (viewModel.friendList.size <= SIZE_ZERO) {
+            viewModel.removeFriends()
             totalPayment = SIZE_ZERO
         }
         with(binding) {
@@ -120,7 +116,7 @@ class FriendListFragment : Fragment(), ILongClick {
 
     private fun setOnCLickListeners() {
         binding.fabCreate.setOnClickListener {
-//            presenter.add()
+            navigateForm()
         }
 
         binding.btnRemove.setOnClickListener {
@@ -128,7 +124,7 @@ class FriendListFragment : Fragment(), ILongClick {
         }
 
         binding.btnCalculate.setOnClickListener {
-            if (repository.getFriends().count() < SIZE_TWO) {
+            if (viewModel.friendList.count() < SIZE_TWO) {
                 Toast.makeText(
                     requireContext(),
                     "At least two friend is needed.",
@@ -148,14 +144,14 @@ class FriendListFragment : Fragment(), ILongClick {
 
     private fun setAdapter() {
         with(binding.recyclerview) {
-            friendAdapter.differ.submitList(repository.getFriends())
+            friendAdapter.differ.submitList(viewModel.friendList)
             layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = this@FriendListFragment.friendAdapter
             friendAdapter.setLongClickListener(this@FriendListFragment)
         }
 
-        repository.getFriends().forEach {
+        viewModel.friendList.forEach {
             totalPayment += it.payment
         }
 
@@ -175,8 +171,8 @@ class FriendListFragment : Fragment(), ILongClick {
                 val position = viewHolder.adapterPosition
                 val deletedFriend: Friend = friendAdapter.differ.currentList[position]
                 totalPayment -= deletedFriend.payment
-                repository.remove(deletedFriend)
-                friendAdapter.differ.submitList(repository.getFriends())
+                viewModel.removeFriend(deletedFriend)
+                friendAdapter.differ.submitList(viewModel.friendList)
 
                 Snackbar.make(
                     binding.recyclerview,
@@ -186,13 +182,13 @@ class FriendListFragment : Fragment(), ILongClick {
                     .setAction(
                         "Undo"
                     ) {
-                        repository.add(deletedFriend)
-                        friendAdapter.differ.submitList(repository.getFriends())
+                        viewModel.add(deletedFriend)
+                        friendAdapter.differ.submitList(viewModel.friendList)
                         totalPayment += deletedFriend.payment
                         binding.tvTotalPayment.text = "Total Payment: $totalPayment"
                     }
                     .show()
-                totalPayment = repository.getFriends().map { it.payment }.sum()
+                totalPayment = viewModel.friendList.sumOf { it.payment }
                 binding.tvTotalPayment.text = "Total Payment: $totalPayment"
             }
         }).attachToRecyclerView(binding.recyclerview)
