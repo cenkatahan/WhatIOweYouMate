@@ -2,7 +2,6 @@ package com.atahan.whatioweyoumate.view
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -38,8 +37,6 @@ class FriendListFragment : Fragment(), ILongClick {
     @Inject
     lateinit var friend: Friend
 
-    //    @Inject
-//    lateinit var viewModel: FriendListViewModel
     private val viewModel: FriendListViewModel by viewModels()
 
     override fun onCreateView(
@@ -55,27 +52,48 @@ class FriendListFragment : Fragment(), ILongClick {
         setOnCLickListeners()
         setAdapter()
 
-
         viewModel.friendList.forEach {
             totalPayment += it.payment
         }
     }
 
     override fun edit(position: Int) {
-//        presenter.updateItemAt(position)
+        updateFriendAt(position)
     }
 
-    fun navigateForm() {
+    private fun setOnCLickListeners() {
+        binding.fabCreate.setOnClickListener {
+            navigateForm()
+        }
+
+        binding.btnRemove.setOnClickListener {
+            removeFriends()
+        }
+
+        binding.btnCalculate.setOnClickListener {
+            if (viewModel.friendList.count() < SIZE_TWO) {
+                Toast.makeText(
+                    requireContext(),
+                    "At least two friend is needed.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            calculateDebts()
+        }
+    }
+
+    private fun navigateForm() {
         this.findNavController().navigate(R.id.action_friendListFragment_to_formFragment2)
     }
 
-    fun updateFriendAt(id: Int) {
+    private fun updateFriendAt(id: Int) {
         val currentFriend = friendAdapter.differ.currentList[id]
         val bundle = bundleOf("friend" to currentFriend)
         view?.findNavController()?.navigate(R.id.action_friendListFragment_to_formFragment2, bundle)
     }
 
-    fun removeFriends() {
+    private fun removeFriends() {
         if (viewModel.friendList.size <= SIZE_ZERO) {
             Toast.makeText(context, "List is empty.", Toast.LENGTH_SHORT).show()
             return
@@ -85,7 +103,7 @@ class FriendListFragment : Fragment(), ILongClick {
         val removeDialog = Dialog(requireContext())
 
         bindingRemoveDialog.btnRemove.setOnClickListener {
-//            presenter.clearList()
+            clearFriends()
             removeDialog.dismiss()
         }
 
@@ -100,8 +118,8 @@ class FriendListFragment : Fragment(), ILongClick {
 
     }
 
-    fun clearFriends() {
-        if (viewModel.friendList.size <= SIZE_ZERO) {
+    private fun clearFriends() {
+        if (viewModel.friendList.size > SIZE_ZERO) {
             viewModel.removeFriends()
             totalPayment = SIZE_ZERO
         }
@@ -114,29 +132,7 @@ class FriendListFragment : Fragment(), ILongClick {
         }
     }
 
-    private fun setOnCLickListeners() {
-        binding.fabCreate.setOnClickListener {
-            navigateForm()
-        }
-
-        binding.btnRemove.setOnClickListener {
-//            presenter.remove()
-        }
-
-        binding.btnCalculate.setOnClickListener {
-            if (viewModel.friendList.count() < SIZE_TWO) {
-                Toast.makeText(
-                    requireContext(),
-                    "At least two friend is needed.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-//            presenter.calculate()
-        }
-    }
-
-    fun calculateDebts() {
+    private fun calculateDebts() {
         view?.findNavController()
             ?.navigate(R.id.action_friendListFragment_to_calculationResultFragment2, null)
     }
