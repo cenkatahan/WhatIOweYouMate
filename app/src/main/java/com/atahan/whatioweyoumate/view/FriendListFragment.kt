@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atahan.whatioweyoumate.R
 import com.atahan.whatioweyoumate.adapter.FriendAdapter
+import com.atahan.whatioweyoumate.common.Constants.KEY_ARGUMENT
 import com.atahan.whatioweyoumate.databinding.FragmentFriendListBinding
 import com.atahan.whatioweyoumate.databinding.LayoutDialogRemoveBinding
 import com.atahan.whatioweyoumate.interfaces.ILongClick
@@ -89,7 +90,7 @@ class FriendListFragment : Fragment(), ILongClick {
 
     private fun updateFriendAt(id: Int) {
         val currentFriend = friendAdapter.differ.currentList[id]
-        val bundle = bundleOf("friend" to currentFriend)
+        val bundle = bundleOf(KEY_ARGUMENT to currentFriend)
         view?.findNavController()?.navigate(R.id.action_friendListFragment_to_formFragment2, bundle)
     }
 
