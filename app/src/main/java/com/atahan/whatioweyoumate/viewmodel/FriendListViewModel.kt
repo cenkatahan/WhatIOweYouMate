@@ -3,6 +3,7 @@ package com.atahan.whatioweyoumate.viewmodel
 import androidx.lifecycle.ViewModel
 import com.atahan.whatioweyoumate.model.Friend
 import com.atahan.whatioweyoumate.repository.FriendRepository
+import com.atahan.whatioweyoumate.repository.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -10,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendListViewModel
 @Inject constructor(
-    private val repository: FriendRepository
+    private val repository: IRepository
 ) : ViewModel() {
 
     val friendList: List<Friend>

@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.atahan.whatioweyoumate.common.Constants.TABLE_FRIEND
+import com.atahan.whatioweyoumate.db.FriendDao
 import com.atahan.whatioweyoumate.db.FriendDatabase
 import com.atahan.whatioweyoumate.model.Friend
+import com.atahan.whatioweyoumate.repository.FriendRepository
+import com.atahan.whatioweyoumate.repository.IRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +33,7 @@ object DdModule {
 
     @Provides
     fun provideFriend() = Friend()
+
+    @Provides
+    fun provideRepository(dao: FriendDao) = FriendRepository(dao) as IRepository
 }
